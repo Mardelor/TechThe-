@@ -1,7 +1,6 @@
 package utils;
 
 import pfg.config.Config;
-import utils.ConfigData;
 import utils.container.ContainerException;
 import utils.container.Service;
 
@@ -47,7 +46,7 @@ public class Container implements Service
     /**
      * Instancie le gestionnaire de dépendances ainsi que la config
      */
-    private Container()
+    private Container(String profile)
     {
         /* Affichage du message de bienvenue */
         printMessage("intro.txt");
@@ -90,8 +89,8 @@ public class Container implements Service
         /* Instanciation des attributs & de la config */
         instanciedServices = new HashMap<>();
         instanciedThreads = new HashMap<>();
-        config = new Config(ConfigData.values(), true);
-        Log.init();
+        config = new Config(ConfigData.values(), true, "config/config.txt", "Common", profile);
+        Log.init(config);
 
         /* Le container est un service ! */
         instanciedServices.put(getClass().getSimpleName(), this);
@@ -116,9 +115,9 @@ public class Container implements Service
     /**
      * Getter pour instanciation du singleton
      */
-    public static Container getInstance() {
+    public static Container getInstance(String ConfigProfile) {
         if (instance == null) {
-            instance = new Container();
+            instance = new Container(ConfigProfile);
         }
         return instance;
     }

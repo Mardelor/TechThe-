@@ -1,5 +1,7 @@
 package utils;
 
+import pfg.config.Config;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -41,8 +43,15 @@ public enum Log
 
     /**
      * True pour sauvegarder les logs
+     * override par la config
      */
-    private static boolean saveLogs = true;
+    private static boolean saveLogs     = true;
+
+    /**
+     * True pour afficher les logs
+     * override par la config
+     */
+    private static boolean printLogs    = true;
 
     /**
      * Nom du fichier de sauvegarde des logs
@@ -107,7 +116,7 @@ public enum Log
                 calendar.get(Calendar.SECOND) + "," +
                 calendar.get(Calendar.MILLISECOND) + " ";
 
-        if(print)
+        if(print & printLogs)
         {
             StackTraceElement elem = Thread.currentThread().getStackTrace()[3];
             System.out.println(color + hour + this.name() + " " +
@@ -143,7 +152,7 @@ public enum Log
     /**
      * Initialise les flux d'entrée/sortie
      */
-    public static void init()
+    public static void init(Config config)
     {
         try {
             calendar = new GregorianCalendar();
@@ -155,7 +164,10 @@ public enum Log
             if (!testFinalRepertoire.exists())
                 testFinalRepertoire.mkdir();
             writer = new BufferedWriter(new FileWriter(finalSaveFile, true));
+            saveLogs = config.getBoolean(ConfigData.SAVE_LOG);
+            printLogs = config.getBoolean(ConfigData.PRINT_LOG);
             System.out.println(LOG_INFO + "DEMARRAGE DU SERVICE DE LOG");
+            System.out.println(RESET);
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -211,7 +223,6 @@ public enum Log
     public boolean isActive() {
         return active;
     }
-
     public void setActive(boolean active) {
         this.active = active;
     }

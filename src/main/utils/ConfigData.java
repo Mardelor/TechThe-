@@ -20,6 +20,18 @@ public enum ConfigData implements ConfigInfo
     ETHERNET_DEFAULT_TIME(1),
 
     /**
+     * Informations relatives au status du robot (Maître ou esclave ?)
+     */
+    MASTER_ROBOT_IP("192.168.0.1"),
+    MASTER(true),
+
+    /**
+     * Paramètres du log
+     */
+    PRINT_LOG(true),
+    SAVE_LOG(true),
+
+    /**
      * Dimensions du robot
      */
     ROBOT_RAY(220),

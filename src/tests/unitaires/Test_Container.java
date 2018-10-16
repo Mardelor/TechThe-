@@ -21,7 +21,7 @@ public class Test_Container
     @Before
     public void setUp()
     {
-        container = Container.getInstance();
+        container = Container.getInstance("Master");
         Assert.assertNotNull(container.getConfig());
     }
 
