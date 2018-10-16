@@ -23,7 +23,7 @@ public class Test_Graphe
 
     @Before
     public void setUp() throws Exception {
-        container = Container.getInstance();
+        container = Container.getInstance("Master");
     }
 
     @After

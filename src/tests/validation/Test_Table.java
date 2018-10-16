@@ -32,7 +32,7 @@ public class Test_Table
 
     @Before
     public void setUp() throws ContainerException {
-        container = Container.getInstance();
+        container = Container.getInstance("Master");
         table = container.getService(Table.class);
         container.getService(Graphe.class);
     }
