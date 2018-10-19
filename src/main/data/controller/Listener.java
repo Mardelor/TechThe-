@@ -13,13 +13,15 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Classe qui permet découter toute les entrés
  */
-public class Listener extends Thread implements Service
-{
+public class Listener extends Thread implements Service {
+
     /**
      * Le selecteur
      * @see Selector
@@ -44,8 +46,8 @@ public class Listener extends Thread implements Service
     /**
      * Buffer de lecture et sa taille
      */
-    private ByteBuffer buffer;
-    private final int BUFFER_SIZE   = 128;
+    private ByteBuffer[] buffers;
+    private final int HEADER_SIZE   = 2 + Integer.BYTES;
 
     /**
      * L'IP de la Rpi du robot principale
@@ -61,9 +63,9 @@ public class Listener extends Thread implements Service
     /**
      * Files de messages pour le traitements des données
      */
-    private StringBuffer robotPositionBuffer;
-    private StringBuffer buddyPositionBuffer;
-    private StringBuffer lidarBuffer;
+    private ConcurrentLinkedQueue<String> robotPositionBuffer;
+    private ConcurrentLinkedQueue<String> buddyPositionBuffer;
+    private ConcurrentLinkedQueue<String> lidarBuffer;
 
     /**
      * Construit le listener
@@ -88,37 +90,35 @@ public class Listener extends Thread implements Service
         }
 
         this.map = new HashMap<>();
-        this.robotPositionBuffer = new StringBuffer();
-        this.buddyPositionBuffer = new StringBuffer();
-        this.lidarBuffer = new StringBuffer();
-        this.buffer = ByteBuffer.allocate(BUFFER_SIZE);
+        this.buffers = new ByteBuffer[2];
+        this.buffers[0] = ByteBuffer.allocate(HEADER_SIZE);
+        this.robotPositionBuffer = new ConcurrentLinkedQueue<>();
+        this.buddyPositionBuffer = new ConcurrentLinkedQueue<>();
+        this.lidarBuffer = new ConcurrentLinkedQueue<>();
     }
 
     /**
      * Lit les headers du message, le place dans le bon buffer et le redirige si besoin
      */
-    private void handleMessage(SelectionKey key) {
-        char[] headers = new char[2];
-        buffer.flip();
-        headers[0] = buffer.getChar();
-        headers[1] = buffer.getChar();
+    private void handleMessage(String headers, SelectionKey key) {
+        String s = new String(buffers[1].array(), Charset.forName("ASCII"));
 
-        if (Arrays.equals(headers, CommunicatonChannels.ROBOT_POSITION.getHeaders())) {
-            robotPositionBuffer.append(buffer);
-            if (CommunicatonChannels.ROBOT_POSITION.getKey() == null) {
-                CommunicatonChannels.ROBOT_POSITION.setKey(key);
+        if (headers.equals(CommunicatonChannels.ROBOT_POSITION.getHeaders())) {
+            CommunicatonChannels.ROBOT_POSITION.setChannel(map.get(key));
+            robotPositionBuffer.add(s);
+            try {
+                CommunicatonChannels.BUDDY_POSITION.sendMessage(s);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            SelectionKey redirectKey = CommunicatonChannels.BUDDY_POSITION.getKey();
-            if (redirectKey != null) {
-                // TODO : envoie de la position avec les headers BUDDY
-            }
-        } else if (Arrays.equals(headers, CommunicatonChannels.BUDDY_POSITION.getHeaders())) {
-            buddyPositionBuffer.append(buffer);
-            Log.COMMUNICATION.debug("Message BUDDY Recu : " + buffer);
-        } else if (Arrays.equals(headers, CommunicatonChannels.LIDAR.getHeaders())) {
-            lidarBuffer.append(buffer);
+        } else if (headers.equals(CommunicatonChannels.BUDDY_POSITION.getHeaders())) {
+            CommunicatonChannels.BUDDY_POSITION.setChannel(map.get(key));
+            buddyPositionBuffer.add(s);
+        } else if (headers.equals(CommunicatonChannels.LIDAR.getHeaders())) {
+            CommunicatonChannels.LIDAR.setChannel(map.get(key));
+            lidarBuffer.add(s);
         } else {
-            Log.COMMUNICATION.warning("Headers inconnus : " + headers[0] + ", " + headers[1]);
+            Log.COMMUNICATION.warning("Unknown headers : " + headers);
         }
     }
 
@@ -128,7 +128,24 @@ public class Listener extends Thread implements Service
     @Override
     public void run() {
 
+        String headers;
+        byte[] h = new byte[2];
+        int size;
+
         // TODO L'esclave doit se connecter au maître
+        if (!master) {
+            try {
+                Log.COMMUNICATION.debug("Connection au maître...");
+                SocketChannel masterChan = SocketChannel.open(new InetSocketAddress(mainRobotIp, N_PORT));
+                masterChan.configureBlocking(false);
+                SelectionKey masterKey = masterChan.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                map.put(masterKey, masterChan);
+                CommunicatonChannels.BUDDY_POSITION.setChannel(masterChan);
+                Log.COMMUNICATION.debug("Connecté !");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         while (!Thread.currentThread().isInterrupted()) {
             try {
@@ -159,15 +176,30 @@ public class Listener extends Thread implements Service
                 if (key.isReadable()) {
                     try {
                         SocketChannel chan = map.get(key);
-                        buffer.clear();
-                        int recv = chan.read(buffer);
+                        buffers[0].clear();
+                        long recv = chan.read(buffers[0]);
+
+                        if (recv != 6) {
+                            chan.close();
+                            map.remove(key);
+                            key.cancel();
+                            Log.COMMUNICATION.critical("Connection perdue");
+                        }
+
+                        buffers[0].flip();
+                        buffers[0].get(h, 0, h.length);
+                        headers = new String(h);
+                        size = buffers[0].getInt();
+                        buffers[1] = ByteBuffer.allocate(size);
+                        recv = chan.read(buffers[1]);
+
                         if (recv < 0) {
                             chan.close();
                             map.remove(key);
                             key.cancel();
                             Log.COMMUNICATION.critical("Connection perdue");
                         } else {
-                            handleMessage(key);
+                            handleMessage(headers, key);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -184,5 +216,18 @@ public class Listener extends Thread implements Service
     public void updateConfig(Config config) {
         mainRobotIp = config.getString(ConfigData.MASTER_ROBOT_IP);
         master = config.getBoolean(ConfigData.MASTER);
+    }
+
+    /**
+     * Getters & Setters
+     */
+    public ConcurrentLinkedQueue<String> getRobotPositionBuffer() {
+        return robotPositionBuffer;
+    }
+    public ConcurrentLinkedQueue<String> getBuddyPositionBuffer() {
+        return buddyPositionBuffer;
+    }
+    public ConcurrentLinkedQueue<String> getLidarBuffer() {
+        return lidarBuffer;
     }
 }
