@@ -6,6 +6,6 @@ package utils.communication;
  * @author rem
  */
 public class CommunicationException extends Exception {
-    CommunicationException() {super();}
-    CommunicationException(String message) {super(message);}
+    public CommunicationException() {super();}
+    public CommunicationException(String message) {super(message);}
 }

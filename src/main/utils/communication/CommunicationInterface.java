@@ -35,4 +35,9 @@ public interface CommunicationInterface {
      *                  en cas de problèmes de communication
      */
     void close() throws CommunicationException;
+
+    /**
+     * @return true si l'on peut communiquer avec cette interface
+     */
+    boolean isInterfaceOpen();
 }

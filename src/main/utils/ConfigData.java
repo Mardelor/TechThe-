@@ -7,7 +7,7 @@ import pfg.config.ConfigInfo;
  * La valeur associée dans cette classe est celle attribuée par défaut, lorsque l'on fait une faute d'orthographe
  * dans le nom de la clé par exemple.
  *
- * @author pf
+ * @author rem
  */
 public enum ConfigData implements ConfigInfo
 {
@@ -22,8 +22,22 @@ public enum ConfigData implements ConfigInfo
     /**
      * Informations relatives au status du robot (Maître ou esclave ?)
      */
-    MASTER_ROBOT_IP("192.168.0.1"),
     MASTER(true),
+
+    /**
+     * Ips et ports des raspis, lidar & teensy
+     */
+    MASTER_IP("192.168.0.3"),
+    MASTER_PORT(14500),
+    SLAVE_IP("192.168.0.4"),
+    SLAVE_PORT(14500),
+    TEENSY_MASTER_IP("192.168.0.1"),
+    TEENSY_MASTER_PORT(13500),
+    TEENSY_SLAVE_IP("192.168.0.2"),
+    TEENSY_SLAVE_PORT(13500),
+    LIDAR_PORT(15500),
+
+    LOCALHOST("localhost"),
 
     /**
      * Paramètres du log

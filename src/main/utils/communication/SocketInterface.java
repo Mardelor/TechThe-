@@ -92,9 +92,6 @@ public abstract class SocketInterface implements CommunicationInterface {
     }
 
     @Override
-    public abstract void init() throws CommunicationException;
-
-    @Override
     public synchronized void close() throws CommunicationException {
         try {
             if (this.initiate) {
@@ -105,6 +102,11 @@ public abstract class SocketInterface implements CommunicationInterface {
         } catch (IOException e) {
             throw new CommunicationException("Impossible de fermer la communication");
         }
+    }
+
+    @Override
+    public boolean isInterfaceOpen() {
+        return initiate;
     }
 
     /**
