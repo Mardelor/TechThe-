@@ -18,10 +18,13 @@ import java.util.Optional;
  */
 public enum Connection {
     MASTER(ConfigData.MASTER_IP, ConfigData.MASTER_PORT, SocketClientInterface.class),
-    SLAVE(ConfigData.SLAVE_IP, ConfigData.SLAVE_PORT, SocketServerInterface.class),
+    SLAVE(ConfigData.LOCALHOST, ConfigData.MASTER_PORT, SocketServerInterface.class),
     LIDAR(ConfigData.LOCALHOST, ConfigData.LIDAR_PORT, SocketClientInterface.class),
     TEENSY_MASTER(ConfigData.TEENSY_MASTER_IP, ConfigData.TEENSY_MASTER_PORT, SocketClientInterface.class),
     TEENSY_SLAVE(ConfigData.TEENSY_SLAVE_IP, ConfigData.TEENSY_SLAVE_PORT, SocketClientInterface.class),
+
+    LOCALHOST_SERVER(ConfigData.LOCALHOST, ConfigData.LOCALSERVER_PORT, SocketServerInterface.class),
+    LOCALHOST_CLIENT(ConfigData.LOCALHOST, ConfigData.LOCALSERVER_PORT, SocketClientInterface.class)
     ;
 
     /**

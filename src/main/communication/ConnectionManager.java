@@ -5,6 +5,7 @@ import utils.communication.CommunicationException;
 import utils.container.Service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Gère l'instanciation et l'iniitalisation des interfaces de communication
@@ -49,8 +50,12 @@ public class ConnectionManager implements Service {
      *                      en cas de problemes de connexion
      */
     public void closeInitiatedConnections() throws CommunicationException {
-        for (Connection connection : initiatedConnections) {
-            connection.close();
+        Iterator<Connection> iterator = initiatedConnections.iterator();
+        Connection current;
+        while (iterator.hasNext()) {
+            current = iterator.next();
+            current.close();
+            iterator.remove();
         }
     }
 
@@ -64,6 +69,18 @@ public class ConnectionManager implements Service {
             }
         }
         return true;
+    }
+
+    /**
+     * @see Object#finalize()
+     */
+    @Override
+    public void finalize() {
+        try {
+            this.closeInitiatedConnections();
+        } catch (CommunicationException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -70,6 +70,9 @@ public class OrderWrapper implements Service {
         }
     }
 
+    /**
+     * @see Service#updateConfig(Config)
+     */
     @Override
     public void updateConfig(Config config) {
         boolean master = config.getBoolean(ConfigData.MASTER);
@@ -79,5 +82,14 @@ public class OrderWrapper implements Service {
             this.lowLevelConnection = Connection.TEENSY_SLAVE;
         }
         this.symetrie = config.getString(ConfigData.COULEUR).equals("violet");
+    }
+
+    /**
+     * Set la connection à utiliser pour les envois d'ordres
+     * ATTENTION : utilisé uniquement pour les tests
+     * @param connection    la nouvelle connection
+     */
+    public void setLowLevelConnection(Connection connection) {
+        this.lowLevelConnection = connection;
     }
 }

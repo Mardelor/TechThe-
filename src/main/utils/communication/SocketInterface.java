@@ -98,6 +98,7 @@ public abstract class SocketInterface implements CommunicationInterface {
                 this.input.close();
                 this.output.close();
                 this.socket.close();
+                this.initiate = false;
             }
         } catch (IOException e) {
             throw new CommunicationException("Impossible de fermer la communication");
