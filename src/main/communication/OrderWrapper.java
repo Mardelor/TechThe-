@@ -8,6 +8,8 @@ import utils.container.Service;
 import utils.maths.MathLib;
 import utils.maths.Vector;
 
+import java.util.Locale;
+
 /**
  * Map des méthodes sur des ordres LL
  */
@@ -34,7 +36,7 @@ public class OrderWrapper implements Service {
      */
     public void moveLengthwise(int d) {
         try {
-            lowLevelConnection.send(String.format("%s %d", MotionOrder.MOVE_LENGTHWISE.getStringOrder(), d));
+            lowLevelConnection.send(String.format(Locale.US, "%s %d", MotionOrder.MOVE_LENGTHWISE.getStringOrder(), d));
         } catch (CommunicationException e) {
             e.printStackTrace();
         }
@@ -49,7 +51,7 @@ public class OrderWrapper implements Service {
             angle = MathLib.modulo(Math.PI - angle, 2*Math.PI);
         }
         try {
-            lowLevelConnection.send(String.format("%s %.3f", MotionOrder.TURN.getStringOrder(), angle));
+            lowLevelConnection.send(String.format(Locale.US, "%s %.3f", MotionOrder.TURN.getStringOrder(), angle));
         } catch (CommunicationException e) {
             e.printStackTrace();
         }
@@ -64,7 +66,7 @@ public class OrderWrapper implements Service {
             point.setX(-point.getX());
         }
         try {
-            lowLevelConnection.send(String.format("%s %d %d", MotionOrder.MOVE_TO_POINT.getStringOrder(), point.getX(), point.getY()));
+            lowLevelConnection.send(String.format(Locale.US, "%s %d %d", MotionOrder.MOVE_TO_POINT.getStringOrder(), point.getX(), point.getY()));
         } catch (CommunicationException e) {
             e.printStackTrace();
         }
