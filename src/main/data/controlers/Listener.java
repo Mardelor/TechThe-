@@ -1,5 +1,7 @@
 package data.controlers;
 
+import communication.Connection;
+import communication.ConnectionManager;
 import pfg.config.Config;
 import utils.ConfigData;
 import utils.Log;

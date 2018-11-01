@@ -1,4 +1,4 @@
-package data.controlers;
+package communication;
 
 import pfg.config.Config;
 import utils.ConfigData;

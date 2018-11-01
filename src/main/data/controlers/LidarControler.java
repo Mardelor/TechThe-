@@ -75,7 +75,7 @@ public class LidarControler extends Thread implements Service {
         while (!Thread.currentThread().isInterrupted()) {
             while (messageQueue.peek() == null) {
                 try {
-                    Thread.sleep(20);
+                    Thread.sleep(TIME_LOOP);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -83,7 +83,8 @@ public class LidarControler extends Thread implements Service {
             points= messageQueue.poll().split(POINT_SEPARATOR);
             vectors.clear();
             for (String point : points) {
-                // TODO
+                vectors.add(new Vector(Double.parseDouble(point.split(COORDONATE_SEPARATOR)[0]),
+                        Double.parseDouble(point.split(COORDONATE_SEPARATOR)[1])));
             }
             table.updateMobileObstacles(vectors);
         }

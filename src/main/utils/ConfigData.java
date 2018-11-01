@@ -20,6 +20,11 @@ public enum ConfigData implements ConfigInfo
     ETHERNET_DEFAULT_TIME(1),
 
     /**
+     * Couleur
+     */
+    COULEUR("jaune"),
+
+    /**
      * Informations relatives au status du robot (Maître ou esclave ?)
      */
     MASTER(true),
