@@ -83,7 +83,7 @@ public class OrderWrapper implements Service {
         } else {
             this.lowLevelConnection = Connection.TEENSY_SLAVE;
         }
-        this.symetrie = config.getString(ConfigData.COULEUR).equals("violet");
+        this.symetrie = config.getString(ConfigData.COULEUR).equals("jaune");
     }
 
     /**

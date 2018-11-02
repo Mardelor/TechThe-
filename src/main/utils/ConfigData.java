@@ -22,7 +22,7 @@ public enum ConfigData implements ConfigInfo
     /**
      * Couleur
      */
-    COULEUR("jaune"),
+    COULEUR("violet"),
 
     /**
      * Informations relatives au status du robot (Maître ou esclave ?)
