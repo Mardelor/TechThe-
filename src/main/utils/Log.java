@@ -19,7 +19,8 @@ public enum Log
     LOCOMOTION(true),
     STRATEGY(true),
     LIDAR(true),
-    PATHFINDING(true)
+    PATHFINDING(true),
+    GRAPHE(true)
     ;
 
     /**

@@ -1,8 +1,8 @@
 package validation;
 
-import communication.Connection;
-import communication.ConnectionManager;
-import communication.OrderWrapper;
+import connection.Connection;
+import connection.ConnectionManager;
+import connection.OrderWrapper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

@@ -69,6 +69,7 @@ public class Graphe implements Service
      * Place les noeuds & arrêtes du graphe
      */
     private void init() {
+        Log.GRAPHE.debug("Initialisation du Graphe...");
         this.nodes = new ArrayList<>();
         this.ridges = new ArrayList<>();
         Vector pos;
@@ -82,7 +83,7 @@ public class Graphe implements Service
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-        Log.LIDAR.debug("Initialisation du Graphe terminée : " + this.nodes.size() + " noeuds, " + this.ridges.size() + " arrêtes");
+        Log.GRAPHE.debug("Initialisation terminée : " + this.nodes.size() + " noeuds, " + this.ridges.size() + " arrêtes");
     }
 
     /**
@@ -157,6 +158,7 @@ public class Graphe implements Service
      * Met à jour la disponibilité des arrêtes en fonction des obstacles mobiles
      */
     void update() {
+        Log.LIDAR.debug("Mise à jour du graphe...");
         int counter = 0;
         for (Ridge ridge : ridges) {
             ridge.setReachable(true);
@@ -168,14 +170,15 @@ public class Graphe implements Service
                 }
             }
         }
-        Log.LIDAR.debug(String.format("%d/%d arrêtes non-accessibles", counter, ridges.size()));
+        Log.LIDAR.debug(String.format("Mise à jour du graphe : %d/%d arrêtes non-accessibles", counter, ridges.size()));
     }
 
     /**
      * Créé un noeud provisoire si un noeud permanent n'existe pas déjà à la position souhaitée
      * @param position  position du noeud
      * @return le noeud qui est à la position souhaitée
-     * @throws CloneNotSupportedException   exception qui n'arrive jamais...
+     * @throws CloneNotSupportedException
+     *                  exception qui n'arrive jamais...
      */
     public Node addProvisoryNode(Vector position) throws CloneNotSupportedException {
         Node n = null;

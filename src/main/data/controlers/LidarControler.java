@@ -1,9 +1,13 @@
 package data.controlers;
 
 import data.Table;
+import data.XYO;
 import pfg.config.Config;
+import pfg.config.ConfigInfo;
+import utils.ConfigData;
 import utils.Log;
 import utils.container.Service;
+import utils.maths.MathLib;
 import utils.maths.Vector;
 
 import java.util.ArrayList;
@@ -47,6 +51,11 @@ public class LidarControler extends Thread implements Service {
     private ConcurrentLinkedQueue<String> messageQueue;
 
     /**
+     * True si autre couleur
+     */
+    private boolean symetrie;
+
+    /**
      * Construit un gestionnaire des données du Lidar
      * @param table     la table
      * @param listener  le listener
@@ -72,6 +81,7 @@ public class LidarControler extends Thread implements Service {
 
         String[] points;
         ArrayList<Vector> vectors = new ArrayList<>();
+        Vector vector;
         while (!Thread.currentThread().isInterrupted()) {
             while (messageQueue.peek() == null) {
                 try {
@@ -83,13 +93,21 @@ public class LidarControler extends Thread implements Service {
             points= messageQueue.poll().split(POINT_SEPARATOR);
             vectors.clear();
             for (String point : points) {
-                vectors.add(new Vector(Double.parseDouble(point.split(COORDONATE_SEPARATOR)[0]),
-                        Double.parseDouble(point.split(COORDONATE_SEPARATOR)[1])));
+                vector = new Vector(Double.parseDouble(point.split(COORDONATE_SEPARATOR)[0]),
+                        Double.parseDouble(point.split(COORDONATE_SEPARATOR)[1]));
+                vector.setTheta(MathLib.modulo(vector.getTheta() + XYO.getRobotInstance().getOrientation(), 2*Math.PI));
+                vector.addVector(XYO.getRobotInstance().getPosition());
+                if (symetrie) {
+                    vector.setX(-vector.getX());
+                }
+                vectors.add(vector);
             }
             table.updateMobileObstacles(vectors);
         }
     }
 
     @Override
-    public void updateConfig(Config config) {}
+    public void updateConfig(Config config) {
+        this.symetrie = config.getString(ConfigData.COULEUR).equals("jaune");
+    }
 }

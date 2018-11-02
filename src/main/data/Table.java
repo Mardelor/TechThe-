@@ -88,6 +88,7 @@ public class Table implements Service
         MobileCircularObstacle obstacle;
         Iterator<Vector> it = points.iterator();
         Vector point;
+        Log.LIDAR.debug("Mise à jour des Obstacle...");
 
         while (iterator.hasNext()) {
             obstacle = iterator.next();
@@ -117,6 +118,7 @@ public class Table implements Service
         } else {
             Log.LIDAR.warning("Graphe non instancié");
         }
+        Log.LIDAR.debug("Mise à jour des obstacles terminées");
     }
 
     /**
