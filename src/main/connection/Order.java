@@ -1,4 +1,4 @@
-package communication;
+package connection;
 
 /**
  * Définit un ordre

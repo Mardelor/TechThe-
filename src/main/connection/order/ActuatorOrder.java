@@ -1,6 +1,6 @@
-package communication.order;
+package connection.order;
 
-import communication.Order;
+import connection.Order;
 
 /**
  * Définit les ordres d'actionneurs

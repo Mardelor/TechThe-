@@ -1,14 +1,12 @@
 package validation;
 
-import communication.Connection;
-import communication.ConnectionManager;
+import connection.Connection;
+import connection.ConnectionManager;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import utils.Container;
-
-import java.lang.reflect.Constructor;
 
 public class Test_ConnectionManager {
 
@@ -27,7 +25,6 @@ public class Test_ConnectionManager {
         connectionManager = null;
         container = null;
         Container.resetInstance();
-        System.gc();
     }
 
     @Test

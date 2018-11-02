@@ -1,6 +1,6 @@
-package communication;
+package connection;
 
-import communication.order.MotionOrder;
+import connection.order.MotionOrder;
 import pfg.config.Config;
 import utils.ConfigData;
 import utils.communication.CommunicationException;

@@ -1,6 +1,6 @@
-package communication.order;
+package connection.order;
 
-import communication.Order;
+import connection.Order;
 
 /**
  * Définit les ordres de mouvement
@@ -11,7 +11,8 @@ import communication.Order;
 public enum MotionOrder implements Order {
     MOVE_LENGTHWISE("d"),
     TURN("t"),
-    MOVE_TO_POINT("p")
+    MOVE_TO_POINT("p"),
+    STOP("s")
     ;
 
     /**

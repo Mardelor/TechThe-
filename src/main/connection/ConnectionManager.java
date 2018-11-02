@@ -1,4 +1,4 @@
-package communication;
+package connection;
 
 import pfg.config.Config;
 import utils.communication.CommunicationException;
