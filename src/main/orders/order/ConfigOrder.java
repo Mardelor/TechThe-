@@ -1,6 +1,4 @@
-package connection.order;
-
-import connection.Order;
+package orders.order;
 
 /**
  * Ordre de configuration du LL
@@ -13,6 +11,7 @@ public enum ConfigOrder implements Order {
     SET_X("cx"),
     SET_Y("cy"),
     SET_ORIENTATION("co"),
+    SET_POSITION("cxy"),
     SET_SPEED("ctrv"),
     SET_TRANSLATIONNAL_SPEED("ctv"),
     SET_ROTATIONNAL_SPEED("crv"),

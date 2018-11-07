@@ -78,7 +78,7 @@ public class Rectangle extends Shape
 
     @Override
     public String toString() {
-        return "recrangle [center : " + center.toString() + ", length (x) : " + this.length + ", width (y) : " + this.width + "]";
+        return "rectangle [center : " + center.toString() + ", length (x) : " + this.length + ", width (y) : " + this.width + "]";
     }
 
     /**

@@ -1,6 +1,4 @@
-package connection.order;
-
-import connection.Order;
+package orders.order;
 
 /**
  * Définit les ordres de mouvement

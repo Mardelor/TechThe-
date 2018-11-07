@@ -2,7 +2,7 @@ package validation;
 
 import connection.Connection;
 import connection.ConnectionManager;
-import connection.OrderWrapper;
+import orders.OrderWrapper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

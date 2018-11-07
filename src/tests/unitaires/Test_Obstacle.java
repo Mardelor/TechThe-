@@ -7,7 +7,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import utils.maths.Circle;
-import utils.maths.Segment;
 import utils.maths.Vector;
 
 public class Test_Obstacle

@@ -1,4 +1,4 @@
-package connection;
+package orders.order;
 
 /**
  * Définit un ordre

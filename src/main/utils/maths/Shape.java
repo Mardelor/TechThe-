@@ -3,8 +3,7 @@ package utils.maths;
 /**
  * Classe abstraite désignant un archétype d'un forme
  */
-public abstract class Shape
-{
+public abstract class Shape implements Cloneable {
     /**
      * Centre de la forme
      */

@@ -45,7 +45,7 @@ public class Test_Log
     }
 
     @Test
-    public void testLogSimple() throws Exception
+    public void testLogDebug() throws Exception
     {
         Log.COMMUNICATION.debug("TC");
         Log.LOCOMOTION.debug("TL");
